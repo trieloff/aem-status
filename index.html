@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEM Status</title>
+    <style>
+        html, body { height: 100%; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #111827; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        header { background: #4f46e5; color: white; padding: 40px 0; }
+        main { padding: 20px 0 40px; }
+
+        /* Cards/sections */
+        .section { background: #ffffff; border-radius: 12px; box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06); overflow: hidden; margin: 24px 0; }
+        .section-head { padding: 16px 20px; background: #f1f5f9; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+        .section-head h2 { margin: 0; font-size: 18px; color: #334155; }
+
+        /* Overall status */
+        .status-overview { background: #ffffff; border-radius: 12px; box-shadow: 0 10px 24px rgba(2, 6, 23, 0.06); padding: 20px; margin-top: -16px; display: flex; justify-content: center; }
+        .status-badge { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px; font-weight: 700; }
+        .status-badge.ok { background: #ecfdf5; color: #065f46; }
+        .status-badge.warn { background: #fffbeb; color: #92400e; }
+        .status-badge.err { background: #fef2f2; color: #991b1b; }
+        .status-indicator { width: 10px; height: 10px; border-radius: 999px; }
+        .status-indicator.ok { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+        .status-indicator.warn { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
+        .status-indicator.err { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
+
+        /* Services */
+        .services { display: grid; grid-template-columns: 1fr; }
+        .service { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 16px 20px; border-top: 1px solid #f1f5f9; }
+        .service:first-child { border-top: none; }
+        .service h3 { margin: 0; font-size: 16px; }
+        .service p { margin: 4px 0 0 0; color: #6b7280; font-size: 14px; }
+        .service .state { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
+        .service .state.ok { color: #065f46; }
+        .service .state.warn { color: #92400e; }
+        .service .state.err { color: #991b1b; }
+
+        /* Responsive */
+        @media (max-width: 720px) {
+            .service { grid-template-columns: 1fr; align-items: start; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>AEM Status</h1>
+            <p>Current system status and incident history</p>
+        </div>
+    </header>
+    <main class="container">
+        <!-- Overall status -->
+        <section class="status-overview" aria-live="polite">
+            <span class="status-badge ok"><span class="status-indicator ok"></span>All systems operational</span>
+        </section>
+
+        <!-- Services -->
+        <section class="section" aria-labelledby="servicesTitle">
+            <div class="section-head">
+                <h2 id="servicesTitle">Services</h2>
+            </div>
+            <div class="services" role="list">
+                <div class="service" role="listitem">
+                    <div>
+                        <h3>AEM Author</h3>
+                        <p>Content authoring environment</p>
+                    </div>
+                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
+                </div>
+                <div class="service" role="listitem">
+                    <div>
+                        <h3>AEM Publish</h3>
+                        <p>Customer-facing delivery tier</p>
+                    </div>
+                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
+                </div>
+                <div class="service" role="listitem">
+                    <div>
+                        <h3>CDN</h3>
+                        <p>Global content delivery network</p>
+                    </div>
+                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
+                </div>
+                <div class="service" role="listitem">
+                    <div>
+                        <h3>Asset Processing</h3>
+                        <p>Digital asset processing (images, video)</p>
+                    </div>
+                    <div class="state warn"><span class="status-indicator warn"></span>Degraded performance</div>
+                </div>
+                <div class="service" role="listitem">
+                    <div>
+                        <h3>Search & Indexing</h3>
+                        <p>Content search, indexing pipelines</p>
+                    </div>
+                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current incidents -->
+        <section class="section" aria-labelledby="currentIncidentsTitle">
+            <div class="section-head">
+                <h2 id="currentIncidentsTitle">Current incidents</h2>
+            </div>
+            <div class="incidents" role="list">
+                <style>
+                    .incidents { display: grid; grid-template-columns: 1fr; }
+                    .incident { padding: 18px 20px; border-top: 1px solid #f1f5f9; }
+                    .incident:first-child { border-top: none; }
+                    .incident-row { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+                    .incident h3 { margin: 0; font-size: 16px; }
+                    .incident .meta { color: #6b7280; font-size: 14px; margin-top: 4px; }
+                    .pill { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; }
+                    .pill.monitoring { background: #f1f5f9; color: #111827; }
+                    .pill.resolved { background: #ecfdf5; color: #065f46; }
+                    .pill.investigating { background: #fffbeb; color: #92400e; }
+                    .updates { margin-top: 12px; padding-left: 12px; border-left: 3px solid #e5e7eb; }
+                    .updates .u { margin: 10px 0; }
+                    .updates time { display: block; font-size: 12px; color: #6b7280; font-weight: 800; }
+                    .updates p { margin: 4px 0 0 0; color: #334155; }
+                </style>
+                <article class="incident" role="listitem" aria-labelledby="inc1Title">
+                    <div class="incident-row">
+                        <div>
+                            <h3 id="inc1Title">Asset Processing performance degradation</h3>
+                            <div class="meta">Started: Dec 15, 2024 • 2:30 PM PST</div>
+                        </div>
+                        <div class="pill monitoring">Monitoring</div>
+                    </div>
+                    <p>Uploads may take longer to process. A mitigation is in place while we observe recovery.</p>
+                    <div class="updates" aria-label="Updates">
+                        <div class="u">
+                            <time datetime="2024-12-15T15:45:00-08:00">3:45 PM PST</time>
+                            <p>Fix applied; throughput improving.</p>
+                        </div>
+                        <div class="u">
+                            <time datetime="2024-12-15T15:15:00-08:00">3:15 PM PST</time>
+                            <p>Identified DB pool saturation; rolling config change.</p>
+                        </div>
+                        <div class="u">
+                            <time datetime="2024-12-15T14:45:00-08:00">2:45 PM PST</time>
+                            <p>Investigating elevated processing latency.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Incident history -->
+        <section class="section" aria-labelledby="historyTitle">
+            <div class="section-head">
+                <h2 id="historyTitle">Incident history</h2>
+            </div>
+            <div class="incidents" role="list">
+                <article class="incident" role="listitem" aria-labelledby="inc2Title">
+                    <div class="incident-row">
+                        <div>
+                            <h3 id="inc2Title">AEM Author login issues</h3>
+                            <div class="meta">Dec 12, 2024 • 9:15 AM – 11:30 AM PST</div>
+                        </div>
+                        <div class="pill resolved">Resolved</div>
+                    </div>
+                    <p>Users could not log in due to authentication instability.</p>
+                    <div class="updates">
+                        <div class="u">
+                            <time datetime="2024-12-12T11:30:00-08:00">11:30 AM PST</time>
+                            <p>Service stable; logins restored.</p>
+                        </div>
+                        <div class="u">
+                            <time datetime="2024-12-12T10:45:00-08:00">10:45 AM PST</time>
+                            <p>Identified LDAP connector error; fix deployed.</p>
+                        </div>
+                    </div>
+                </article>
+                <article class="incident" role="listitem" aria-labelledby="inc3Title">
+                    <div class="incident-row">
+                        <div>
+                            <h3 id="inc3Title">CDN cache purge delays</h3>
+                            <div class="meta">Dec 8, 2024 • 3:20 PM – 4:45 PM PST</div>
+                        </div>
+                        <div class="pill resolved">Resolved</div>
+                    </div>
+                    <p>Cache purges were delayed, slowing content updates.</p>
+                    <div class="updates">
+                        <div class="u">
+                            <time datetime="2024-12-08T16:45:00-08:00">4:45 PM PST</time>
+                            <p>Performance normal. Monitoring complete.</p>
+                        </div>
+                        <div class="u">
+                            <time datetime="2024-12-08T16:00:00-08:00">4:00 PM PST</time>
+                            <p>Restarted cache manager; latencies improving.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Uptime overview -->
+        <section class="section" aria-labelledby="uptimeTitle">
+            <div class="section-head">
+                <h2 id="uptimeTitle">90‑day uptime history</h2>
+            </div>
+            <style>
+                .uptime { display: grid; grid-template-columns: 1fr; }
+                .uptime-row { padding: 18px 20px; border-top: 1px solid #f1f5f9; }
+                .uptime-row:first-child { border-top: none; }
+                .uptime-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 10px; }
+                .uptime-name { font-weight: 800; }
+                .uptime-pct { font-weight: 800; color: #059669; }
+                .bars { display: grid; grid-template-columns: repeat(30, 1fr); gap: 2px; align-items: end; height: 38px; }
+                .bar { width: 100%; border-radius: 2px; transition: transform .15s ease, opacity .15s ease; }
+                .bar:hover { transform: scaleY(1.08); opacity: .9; }
+                .u100 { background: #10b981; height: 100%; }
+                .u99 { background: #22c55e; height: 92%; }
+                .u95 { background: #f59e0b; height: 72%; }
+                .u92 { background: #fb923c; height: 60%; }
+                .u90 { background: #f97316; height: 55%; }
+                .legend { display: flex; justify-content: space-between; margin-top: 8px; color: #9ca3af; font-size: 12px; }
+                @media (max-width: 720px) { .uptime-head { flex-direction: column; align-items: start; gap: 4px; } }
+            </style>
+            <div class="uptime" role="list">
+                <div class="uptime-row" role="listitem">
+                    <div class="uptime-head">
+                        <div class="uptime-name">AEM Author</div>
+                        <div class="uptime-pct">99.95%</div>
+                    </div>
+                    <div class="bars" aria-label="AEM Author uptime bars">
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.2%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.5%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.1%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.6%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.4%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.7%"></div>
+                    </div>
+                    <div class="legend"><span>90 days ago</span><span>Today</span></div>
+                </div>
+
+                <div class="uptime-row" role="listitem">
+                    <div class="uptime-head">
+                        <div class="uptime-name">AEM Publish</div>
+                        <div class="uptime-pct">99.98%</div>
+                    </div>
+                    <div class="bars" aria-label="AEM Publish uptime bars">
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.9%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.8%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.7%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.9%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.8%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.7%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                    </div>
+                    <div class="legend"><span>90 days ago</span><span>Today</span></div>
+                </div>
+
+                <div class="uptime-row" role="listitem">
+                    <div class="uptime-head">
+                        <div class="uptime-name">CDN</div>
+                        <div class="uptime-pct">99.99%</div>
+                    </div>
+                    <div class="bars" aria-label="CDN uptime bars">
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.9%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.8%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.7%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.8%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.9%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.7%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.9%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                    </div>
+                    <div class="legend"><span>90 days ago</span><span>Today</span></div>
+                </div>
+
+                <div class="uptime-row" role="listitem">
+                    <div class="uptime-head">
+                        <div class="uptime-name">Asset Processing</div>
+                        <div class="uptime-pct">98.76%</div>
+                    </div>
+                    <div class="bars" aria-label="Asset Processing uptime bars">
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u95" title="95.0%"></div>
+                        <div class="bar u92" title="92.1%"></div>
+                        <div class="bar u99" title="99.2%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.1%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.4%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u95" title="95.6%"></div>
+                        <div class="bar u90" title="90.0%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.0%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.7%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.2%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.3%"></div>
+                        <div class="bar u100" title="100%"></div>
+                        <div class="bar u99" title="99.1%"></div>
+                    </div>
+                    <div class="legend"><span>90 days ago</span><span>Today</span></div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

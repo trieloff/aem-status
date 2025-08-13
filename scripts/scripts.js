@@ -32,7 +32,7 @@ const displayIncidentHistory = (history) => {
         month.incidents.forEach(incident => {
             const incidentElement = document.createElement('div');
             incidentElement.classList.add('incident', incident.impact);
-            incidentElement.innerHTML = `<h4><a href="/details.html?code=${incident.code}">${incident.name}</a><span class="pill ${incident.impact}">${incident.impact}</span></h4>
+            incidentElement.innerHTML = `<h4><a href="/details.html?incident=${incident.code}">${incident.name}</a><span class="pill ${incident.impact}">${incident.impact}</span></h4>
             <p>${incident.message}</p>
             <time class="meta" datetime="${incident.timestamp}">${incident.timestamp}</time>`;
             monthElement.appendChild(incidentElement);

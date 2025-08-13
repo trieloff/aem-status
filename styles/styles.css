@@ -48,17 +48,16 @@ main { padding: 20px 0 40px; }
 .pill.major { background: #fef2f2; color: #991b1b; }
 .pill.minor { background: #fffbeb; color: #c0400e; }
 .pill.none { background: #f1f5f9; color: #111827; }
-.updates { margin-top: 12px; padding-left: 12px; border-left: 3px solid #e5e7eb; }
-.updates .u { margin: 10px 0; }
-.updates time { display: block; font-size: 12px; color: #6b7280; font-weight: 800; }
-.updates p { margin: 4px 0 0 0; color: #334155; }
 .incidents > div { padding: 18px 20px; }
 .incidents > div:nth-child(even) { background: #f8fcfd; }
 .incidents > div:first-child { border-top: none; }
 .incidents > div:last-child { border-bottom: none; }
 .incidents > div:last-child { border-bottom: none; }
 
-.incident.critical h4 a:any-link { color: #400; text-decoration: none; }
-.incident.major h4 a:any-link { color: #900; text-decoration: none; }
-.incident.minor h4 a:any-link { color: #c0400e; text-decoration: none; }
-.incident.none h4 a:any-link { color: #111827; text-decoration: none; }
+.incident h4 a:any-link { text-decoration: none; color: #111827; }
+.incident h4 a:any-link:hover { text-decoration: underline; }
+
+.incident.critical h4 a:any-link { color: #400; }
+.incident.major h4 a:any-link { color: #900; }
+.incident.minor h4 a:any-link { color: #c0400e; }
+.incident.none h4 a:any-link { color: #111827; }

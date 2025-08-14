@@ -1,65 +1,365 @@
-html, body { height: 100%; }
-body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #111827; }
-.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-header { background: #4f46e5; color: white; padding: 40px 0; }
-main { padding: 20px 0 40px; }
-
-/* Cards/sections */
-.section { background: #ffffff; border-radius: 12px; box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06); overflow: hidden; margin: 24px 0; }
-.section-head { padding: 16px 20px; background: #4f46e520; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
-.section-head h2 { margin: 0; font-size: 18px; color: #334155; }
-
-/* Overall status */
-.status-overview { background: #ffffff; border-radius: 12px; box-shadow: 0 10px 24px rgba(2, 6, 23, 0.06); padding: 20px; margin-top: -16px; display: flex; justify-content: center; }
-.status-badge { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px; font-weight: 700; }
-.status-badge.ok { background: #ecfdf5; color: #065f46; }
-.status-badge.warn { background: #fffbeb; color: #92400e; }
-.status-badge.err { background: #fef2f2; color: #991b1b; }
-.status-indicator { width: 10px; height: 10px; border-radius: 999px; }
-.status-indicator.ok { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
-.status-indicator.warn { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
-.status-indicator.err { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
-
-/* Services */
-.services { display: grid; grid-template-columns: 1fr; }
-.service { display: grid; grid-template-columns: 1fr; align-items: start; gap: 12px; padding: 16px 20px; border-top: 1px solid #f1f5f9; }
-.service:first-child { border-top: none; }
-.service h3 { margin: 0; font-size: 16px; }
-.service p { margin: 4px 0 0 0; color: #6b7280; font-size: 14px; }
-.service .state { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
-.service .state.ok { color: #065f46; }
-.service .state.warn { color: #92400e; }
-.service .state.err { color: #991b1b; }
-
-/* Responsive */
-@media (min-width: 900px) {
-    .service { grid-template-columns: 1fr auto; align-items: center; }
+html,
+body {
+  height: 100%;
 }
 
-.incidents { display: grid; grid-template-columns: 1fr; }
-.incident { padding: 18px 0; border-top: 1px solid #f1f5f9; }
-.incident h4 { margin-bottom: 0; }
-.incident p { margin: 4px 0; }
-.incident:first-child { border-top: none; }
-.incident-row { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
-.incidents .meta { color: #6b7280; font-size: 14px; margin-top: 4px; }
-.pill { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; margin-left: 10px; }
-.pill.monitoring { background: #f1f5f9; color: #111827; }
-.pill.resolved { background: #ecfdf5; color: #065f46; }
-.pill.investigating { background: #fffbeb; color: #92400e; }
-.pill.major { background: #fef2f2; color: #991b1b; }
-.pill.minor { background: #fffbeb; color: #c0400e; }
-.pill.none { background: #f1f5f9; color: #111827; }
-.incidents > div { padding: 18px 20px; }
-.incidents > div:nth-child(even) { background: #f8fcfd; }
-.incidents > div:first-child { border-top: none; }
-.incidents > div:last-child { border-bottom: none; }
-.incidents > div:last-child { border-bottom: none; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8fafc;
+  color: #111827;
+}
 
-.incident h4 a:any-link { text-decoration: none; color: #111827; }
-.incident h4 a:any-link:hover { text-decoration: underline; }
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
 
-.incident.critical h4 a:any-link { color: #400; }
-.incident.major h4 a:any-link { color: #900; }
-.incident.minor h4 a:any-link { color: #c0400e; }
-.incident.none h4 a:any-link { color: #111827; }
+header {
+  background: #4f46e5;
+  color: white;
+  padding: 40px 0;
+}
+
+header.err {
+  background: #991b1b;
+}
+
+header.warn {
+  background: #c0400e;
+}
+
+main {
+  padding: 20px 0 40px;
+}
+
+/* Cards/sections */
+.section {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgb(2 6 23 / 6%);
+  overflow: hidden;
+  margin: 24px 0;
+}
+
+.section-head {
+  padding: 16px 20px;
+  background: rgb(79 70 229 / 20%);
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #334155;
+}
+
+/* Overall status */
+.status-overview {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgb(2 6 23 / 6%);
+  padding: 20px;
+  margin-top: -16px;
+  display: flex;
+  justify-content: center;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.status-badge.ok {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.status-badge.warn {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.status-badge.err {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.status-badge.ok::after,
+.state.ok::after {
+  content: 'Operational';
+}
+
+.status-badge.warn::after,
+.state.warn::after {
+  content: 'Degraded Performance';
+}
+
+.status-badge.err::after,
+.state.err::after {
+  content: 'Partial Outage';
+}
+
+.status-overview .status-badge.ok::after {
+  content: 'All Systems Operational';
+}
+
+.ok .status-indicator {
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgb(16 185 129 / 15%);
+}
+
+.warn .status-indicator {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgb(245 158 11 / 15%);
+}
+
+.err .status-indicator {
+  background: #ef4444;
+  box-shadow: 0 0 0 3px rgb(239 68 68 / 15%);
+}
+
+/* Services */
+.services {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.service {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 12px;
+  padding: 16px 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.service:first-child {
+  border-top: none;
+}
+
+.service h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.service p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.service .state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.service .state.ok {
+  color: #065f46;
+}
+
+.service .state.warn {
+  color: #92400e;
+}
+
+.service .state.err {
+  color: #991b1b;
+}
+
+/* Responsive */
+@media (width >= 900px) {
+  .service {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+}
+
+.incidents {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.incident {
+  padding: 18px 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.incident h4 {
+  margin-bottom: 0;
+}
+
+.incident p {
+  margin: 4px 0;
+}
+
+.incident:first-child {
+  border-top: none;
+}
+
+.incident-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.incidents .meta {
+  color: #6b7280;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
+.pill.monitoring {
+  background: #f1f5f9;
+  color: #111827;
+}
+
+.pill.resolved {
+  background: #ecfdf5;
+  color: #065f46;
+}
+
+.pill.investigating {
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.pill.major {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.pill.minor {
+  background: #fffbeb;
+  color: #c0400e;
+}
+
+.pill.none {
+  background: #f1f5f9;
+  color: #111827;
+}
+
+.incidents > div {
+  padding: 18px 20px;
+}
+
+.incidents > div:nth-child(even) {
+  background: #f8fcfd;
+}
+
+.incidents > div:first-child {
+  border-top: none;
+}
+
+.incidents > div:last-child {
+  border-bottom: none;
+}
+
+.incident h4 a:any-link {
+  text-decoration: none;
+  color: #111827;
+}
+
+.incident h4 a:any-link:hover {
+  text-decoration: underline;
+}
+
+.incident.critical h4 a:any-link {
+  color: #400;
+}
+
+.incident.major h4 a:any-link {
+  color: #900;
+}
+
+.incident.minor h4 a:any-link {
+  color: #c0400e;
+}
+
+.incident.none h4 a:any-link {
+  color: #111827;
+}
+
+.section[aria-hidden="true"] {
+  display: none;
+}
+
+#current-incident .section-head {
+    background: #111827;
+  }
+  
+#current-incident .section-head h2 {
+  color: white;
+}
+
+#current-incident .section-head h2::after {
+  color: white;
+}
+
+#current-incident.warn .section-head {
+  background: #c0400e;
+}
+
+#current-incident.warn .section-head h2::after {
+  content: ' (Minor Impact)';
+}
+
+#current-incident.err .section-head {
+  background: #991b1b;
+}
+
+#current-incident.err .section-head h2::after {
+  content: ' (Major Impact)';
+}
+
+#current-incident.ok .section-head {
+  background: #111827;
+}
+
+#current-incident.ok .section-head h2::after {
+  content: ' (No Impact)';
+}
+
+#current-incident .status-update {
+  padding: 16px 20px;
+  border-top: 1px solid #f1f5f9;
+}
+
+#current-incident .status-update:first-child {
+  border-top: none;
+}
+
+#current-incident .status-update .pill {
+  margin-left: 0;
+}
+
+#current-incident time {
+  color: #6b7280;
+  font-weight: 800;
+}

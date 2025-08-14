@@ -21,8 +21,6 @@ const fetchCurrentIncident = async () => {
     };
   });
 
-  console.log(data);
-
   return data;
 };
 
@@ -174,9 +172,7 @@ const displayCurrentIncident = (currentIncident) => {
 
 const updateCurrentIncident = async () => {
   const currentIncident = await fetchCurrentIncident();
-  if (currentIncident.length) {
-    displayCurrentIncident(currentIncident);
-  }
+  displayCurrentIncident(currentIncident);
 };
 
 const initIncidents = async () => {

@@ -6,7 +6,7 @@ main { padding: 20px 0 40px; }
 
 /* Cards/sections */
 .section { background: #ffffff; border-radius: 12px; box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06); overflow: hidden; margin: 24px 0; }
-.section-head { padding: 16px 20px; background: #f1f5f9; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+.section-head { padding: 16px 20px; background: #4f46e520; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
 .section-head h2 { margin: 0; font-size: 18px; color: #334155; }
 
 /* Overall status */
@@ -37,7 +37,9 @@ main { padding: 20px 0 40px; }
 }
 
 .incidents { display: grid; grid-template-columns: 1fr; }
-.incident { padding: 18px 20px; border-top: 1px solid #f1f5f9; }
+.incident { padding: 18px 0; border-top: 1px solid #f1f5f9; }
+.incident h4 { margin-bottom: 0; }
+.incident p { margin: 4px 0; }
 .incident:first-child { border-top: none; }
 .incident-row { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
 .incidents .meta { color: #6b7280; font-size: 14px; margin-top: 4px; }

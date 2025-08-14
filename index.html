@@ -17,7 +17,7 @@
     <main class="container">
         <!-- Overall status -->
         <section class="status-overview" aria-live="polite">
-            <span class="status-badge ok"><span class="status-indicator ok"></span>All systems operational</span>
+            <span class="status-badge ok"><span class="status-indicator"></span></span>
         </section>
 
         <!-- Services -->
@@ -26,64 +26,33 @@
                 <h2 id="servicesTitle">Services</h2>
             </div>
             <div class="services" role="list">
-                <div class="service" role="listitem">
+                <div class="service delivery" role="listitem">
                     <div>
                         <h3>AEM Edge Delivery Services: Delivery</h3>
                         <p>Customer-facing delivery tier</p>
                     </div>
-                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
+                    <div class="state ok"><span class="status-indicator"></span></div>
                 </div>
-                <div class="service" role="listitem">
+                <div class="service publishing" role="listitem">
                     <div>
                         <h3>AEM Edge Delivery Services: Publishing</h3>
                         <p>Authoring and Publishing services</p>
                     </div>
-                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
+                    <div class="state ok"><span class="status-indicator"></span></div>
                 </div>
             </div>
         </section>
 
-        <!-- Current incident 
-        <section class="section" aria-labelledby="currentIncidentsTitle">
+        <!-- Current incident -->
+        <section class="section" id="current-incident" aria-hidden="true" aria-labelledby="currentIncidentsTitle">
             <div class="section-head">
-                <h2 id="currentIncidentsTitle">Current incidents</h2>
+                <h2 id="currentIncidentsTitle">Current incident</h2>
             </div>
             <div class="incidents" role="list">
-                <style>
-                    .incidents { display: grid; grid-template-columns: 1fr; }
-                    .incident { padding: 18px 20px; border-top: 1px solid #f1f5f9; }
-                    .incident:first-child { border-top: none; }
-                    .incident-row { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
-                    .incident h3 { margin: 0; font-size: 16px; }
-                    .incident .meta { color: #6b7280; font-size: 14px; margin-top: 4px; }
-                    .pill { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; white-space: nowrap; }
-                    .pill.monitoring { background: #f1f5f9; color: #111827; }
-                    .pill.resolved { background: #ecfdf5; color: #065f46; }
-                    .pill.investigating { background: #fffbeb; color: #92400e; }
-                    .updates { margin-top: 12px; padding-left: 12px; border-left: 3px solid #e5e7eb; }
-                    .updates .u { margin: 10px 0; }
-                    .updates time { display: block; font-size: 12px; color: #6b7280; font-weight: 800; }
-                    .updates p { margin: 4px 0 0 0; color: #334155; }
-                </style>
-                <article class="incident" role="listitem" aria-labelledby="inc1Title">
-                    <div class="incident-row">
-                        <div>
-                            <h3 id="inc1Title">Investigating AEM Edge Delivery Service Issues</h3>
-                            <div class="meta">Started: Dec 15, 2024 • 2:30 PM PST</div>
-                        </div>
-                        <div class="pill investigating">investigating</div>
-                    </div>
-                    <p>We are investigating issues with AEM Edge Delivery Services. We will provide updates as we have them.</p>
-                    <div class="updates" aria-label="Updates">
-                        <div class="u">
-                            <time datetime="2024-12-15T15:45:00-08:00">3:45 PM PST</time>
-                            <p>Fix applied; throughput improving.</p>
-                        </div>
-                    </div>
+                <article class="incident" id="current-incident-details">
                 </article>
             </div>
         </section>
-        -->
 
         <!-- Incident history -->
         <section class="section" aria-labelledby="historyTitle">

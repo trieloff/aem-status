@@ -1,79 +1,27 @@
-// Simple RFC 4180 compliant CSV parser supporting quoted fields and escaped quotes
-// Returns an array of rows, each row is an array of string fields
-function parseCsv(text) {
-  const input = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  const rows = [];
-  let row = [];
-  let field = '';
-  let inQuotes = false;
-
-  for (let i = 0; i < input.length; i += 1) {
-    const char = input[i];
-
-    if (inQuotes) {
-      if (char === '"') {
-        if (input[i + 1] === '"') {
-          field += '"';
-          i += 1;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        field += char;
-      }
-    } else if (char === '"') {
-      inQuotes = true;
-    } else if (char === ',') {
-      row.push(field);
-      field = '';
-    } else if (char === '\n') {
-      row.push(field);
-      rows.push(row);
-      row = [];
-      field = '';
-    } else {
-      field += char;
-    }
-  }
-
-  // Push the last field/row if any content remains
-  if (field.length > 0 || row.length > 0 || inQuotes) {
-    row.push(field);
-    rows.push(row);
-  }
-
-  return rows;
-}
-
 const fetchCurrentIncident = async () => {
-  const convertToHTML = (text) => text.replace(/\n/g, '<br>').replace(/https:\/\/\S+/g, '<a href="$&">$&</a>');
-  const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSxIb7UtdRSSBXXtj3I9NEqixssXf6RhUfdeaFxvH1MmMxkTprJALH2_gRMeu-WldviSSnRNkzss80n/pub?output=csv', {
+  const response = await fetch('https://script.google.com/macros/s/AKfycbxoBSj7v-y5WyoeSn1T0KcFsoQXEYQiiK_nmOPf-pKAJqf7w46ubpt0XmwFM7qdbzgCzw/exec', {
     cache: 'reload',
   });
-  const csv = await response.text();
-  const rows = parseCsv(csv);
+  const json = await response.json();
+  const { rows } = json;
+
   if (!rows.length) return [];
 
-  const headers = rows[0];
-  const data = rows
-    .slice(1)
-    .filter((r) => r && r.some((cell) => (cell ?? '').trim() !== ''))
-    .map((values) => headers.reduce((acc, header, index) => {
-      let value = values[index] ?? '';
-      if (header.toLowerCase() === 'comment') {
-        value = convertToHTML(value);
-      }
+  const data = rows.map((row) => {
+    const status = row.Status.toLowerCase();
+    const impact = row.Impact.toLowerCase();
+    const timestamp = row.Timestamp;
+    const comment = row.Comment.replace(/\n/g, '<br>').replace(/https:\/\/\S+/g, '<a href="$&">$&</a>');
 
-      if (header.toLowerCase() === 'status' || header.toLowerCase() === 'impact') {
-        value = value.toLowerCase();
-      }
+    return {
+      status,
+      impact,
+      timestamp,
+      comment,
+    };
+  });
 
-      if (header.toLowerCase() === 'timestamp') {
-        value = new Date(value);
-      }
-      acc[header.toLowerCase()] = value;
-      return acc;
-    }, {}));
+  console.log(data);
 
   return data;
 };

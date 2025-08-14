@@ -166,6 +166,7 @@ const displayCurrentIncident = (currentIncident) => {
       currentIncidentElement.appendChild(statusUpdateElement);
     });
   } else {
+    updateCurrentImpact('', '', []);
     currentIncidentSection.setAttribute('aria-hidden', 'true');
   }
 };

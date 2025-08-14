@@ -5,26 +5,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incident details</title>
     <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .back-link { display: inline-block; margin: 12px 0 0; color: white; text-decoration: none; }
-        .back-link:hover { text-decoration: underline; }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spectrum-spacing-200);
+            margin: var(--spectrum-spacing-300) 0 0;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+        .back-link:hover {
+            opacity: 0.8;
+            text-decoration: none;
+        }
+        .back-link:focus {
+            outline: 2px solid white;
+            outline-offset: 2px;
+        }
         .iframe-wrap { width: 100%; }
-        .error { padding: 18px 20px; color: #991b1b; background: #fef2f2; border-radius: 8px; }
+        .error {
+            padding: var(--spectrum-spacing-400) var(--spectrum-spacing-500);
+            color: var(--spectrum-red-700);
+            background: rgba(227, 72, 80, 0.1);
+            border: 1px solid rgba(227, 72, 80, 0.3);
+            border-radius: var(--spectrum-border-radius-200);
+            margin: var(--spectrum-spacing-400) 0;
+        }
 
         /* Details page spacing (scoped) */
-        #incidentContainer .incident { padding: 24px; }
-        #incidentContainer .incident .meta { display: block; margin: 2px 0 14px; }
-        #incidentContainer .updates .u { padding: 12px 0; margin: 0; border-bottom: 1px solid #f1f5f9; }
-        #incidentContainer .updates .u:last-child { border-bottom: none; }
-        #incidentContainer .updates time { margin-bottom: 6px; }
-        #incidentContainer .updates p { line-height: 1.5; }
+        #incidentContainer .incident {
+            padding: var(--spectrum-spacing-600);
+            border: none;
+            background: transparent;
+            box-shadow: none;
+        }
+        #incidentContainer .incident .meta {
+            display: block;
+            margin: 0 0 var(--spectrum-spacing-400) 0;
+            font-size: var(--spectrum-font-size-small);
+            color: var(--spectrum-gray-600);
+            font-weight: 500;
+        }
+        #incidentContainer .updates .u {
+            padding: var(--spectrum-spacing-400) 0;
+            margin: 0;
+            border-bottom: 1px solid var(--spectrum-gray-100);
+        }
+        #incidentContainer .updates .u:last-child {
+            border-bottom: none;
+        }
+        #incidentContainer .updates time {
+            margin-bottom: var(--spectrum-spacing-200);
+            display: block;
+            font-size: var(--spectrum-font-size-small);
+            color: var(--spectrum-gray-600);
+            font-weight: 600;
+        }
+        #incidentContainer .updates p {
+            line-height: 1.6;
+            margin: 0;
+            color: var(--spectrum-gray-700);
+        }
 
         /* Markdown content inside updates */
-        #incidentContainer .updates h2 { font-size: 18px; margin: 24px 0 8px; color: #111827; }
-        #incidentContainer .updates h3 { font-size: 16px; margin: 12px 0 6px; color: #111827; }
-        #incidentContainer .updates p { margin: 6px 0 0 0; color: #334155; }
-        #incidentContainer .updates ul { margin: 6px 0 0 18px; }
-        #incidentContainer .updates li { margin: 4px 0; }
+        #incidentContainer .updates h2 {
+            font-size: var(--spectrum-font-size-heading);
+            margin: var(--spectrum-spacing-600) 0 var(--spectrum-spacing-200);
+            color: var(--spectrum-gray-800);
+            font-weight: 600;
+        }
+        #incidentContainer .updates h3 {
+            font-size: var(--spectrum-font-size-large);
+            margin: var(--spectrum-spacing-400) 0 var(--spectrum-spacing-200);
+            color: var(--spectrum-gray-800);
+            font-weight: 600;
+        }
+        #incidentContainer .updates ul {
+            margin: var(--spectrum-spacing-200) 0 var(--spectrum-spacing-200) var(--spectrum-spacing-400);
+        }
+        #incidentContainer .updates li {
+            margin: var(--spectrum-spacing-100) 0;
+            line-height: 1.5;
+        }
+
+        /* Loading state */
+        .loading-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: var(--spectrum-spacing-800);
+            color: var(--spectrum-gray-600);
+        }
+
+        .loading-details .loading-spinner {
+            margin-bottom: var(--spectrum-spacing-300);
+        }
     </style>
     <script>
         window.addEventListener('DOMContentLoaded', async () => {
@@ -54,7 +134,7 @@
 
                 // Extract incident name and impact
                 const nameEl = doc.querySelector('h1.incident-name');
-                const incidentName = (nameEl && nameEl.textContent.trim()) || `Incident ${code}`;
+                const incidentName = (nameEl && nameEl.textContent.trim()) || `Incident ${incident}`;
                 let impact = 'none';
                 if (nameEl) {
                     const impactClass = Array.from(nameEl.classList || []).find(c => c.startsWith('impact-'));
@@ -82,7 +162,6 @@
                 } else {
                     rows.forEach(row => {
                         const title = (row.querySelector('.update-title')?.textContent || '').trim();
-                        console.log(title);
                         const ts = (row.querySelector('.update-timestamp')?.textContent || '').trim().replace(/^Posted\s*/, '');
                         const md = row.querySelector('.update-container .markdown-display');
                         const bodyEl = row.querySelector('.update-container .update-body');
@@ -99,7 +178,7 @@
                         if (md) {
                             const div = document.createElement('div');
                             div.innerHTML = md.innerHTML.replaceAll('<strong>', '').replaceAll('</strong>', '');
-                            
+
                             u.appendChild(div);
                         } else if (bodyEl) {
                             const text = bodyEl.textContent.trim();
@@ -141,9 +220,25 @@
 <body>
     <header>
         <div class="container">
-            <h1>AEM Status</h1>
-            <p>Incident details</p>
-            <a class="back-link" href="/">← Back to status</a>
+            <div class="header-content">
+                <div class="header-brand">
+                    <div class="adobe-logo">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 2L2 30H30L16 2Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <div class="header-text">
+                        <h1>AEM Status</h1>
+                        <p>Incident details and updates</p>
+                    </div>
+                </div>
+            </div>
+            <a class="back-link" href="/">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to status
+            </a>
         </div>
     </header>
 
@@ -153,12 +248,33 @@
                 <h2 id="incidentHeading">Incident</h2>
             </div>
             <div class="iframe-wrap" id="incidentContainer">
-                <div class="incidents">
-                    <div>Loading…</div>
+                <div class="loading-details">
+                    <div class="loading-spinner"></div>
+                    <p>Loading incident details...</p>
                 </div>
             </div>
         </section>
     </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="adobe-logo-small">
+                        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 2L2 30H30L16 2Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <span>Adobe Experience Manager</span>
+                </div>
+                <div class="footer-links">
+                    <a href="https://www.adobe.com/products/experience-manager.html" target="_blank" rel="noopener">Product Page</a>
+                    <a href="https://experienceleague.adobe.com/docs/experience-manager.html" target="_blank" rel="noopener">Documentation</a>
+                    <a href="https://status.adobe.com" target="_blank" rel="noopener">Adobe Status</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
 

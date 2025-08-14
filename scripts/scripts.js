@@ -88,6 +88,7 @@ const displayIncidentHistory = (history) => {
   history.forEach((month) => {
     const monthElement = document.createElement('div');
     monthElement.innerHTML = `<h3>${month.name} ${month.year}</h3>`;
+    monthElement.setAttribute('role', 'listitem');
     incidentHistory.appendChild(monthElement);
     if (month.incidents.length === 0) {
       const metaElement = document.createElement('p');

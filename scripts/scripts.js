@@ -1,9 +1,10 @@
 async function getHistory() {
+    /*
     const incidentHistory = [];
     let i = 1;
     let status = 200;
     do {
-        /* eslint-disable no-await-in-loop */
+        // eslint-disable-next-line no-await-in-loop 
         const response = await fetch(`/incidents/json/history-${i}.json`);
         status = response.status;
         if (status === 200) {
@@ -12,6 +13,9 @@ async function getHistory() {
         }
         i++;
     } while (status === 200);
+     */
+    const response = await fetch('/incidents/index.json');
+    const incidentHistory = await response.json();
     return incidentHistory;
 }
 

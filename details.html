@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident details</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <style>
+        .back-link { display: inline-block; margin: 12px 0 0; color: white; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+        .iframe-wrap { width: 100%; }
+        .error { padding: 18px 20px; color: #991b1b; background: #fef2f2; border-radius: 8px; }
+
+        /* Details page spacing (scoped) */
+        #incidentContainer .incident { padding: 24px; }
+        #incidentContainer .incident .meta { display: block; margin: 2px 0 14px; }
+        #incidentContainer .updates .u { padding: 12px 0; margin: 0; border-bottom: 1px solid #f1f5f9; }
+        #incidentContainer .updates .u:last-child { border-bottom: none; }
+        #incidentContainer .updates time { margin-bottom: 6px; }
+        #incidentContainer .updates p { line-height: 1.5; }
+
+        /* Markdown content inside updates */
+        #incidentContainer .updates h2 { font-size: 18px; margin: 24px 0 8px; color: #111827; }
+        #incidentContainer .updates h3 { font-size: 16px; margin: 12px 0 6px; color: #111827; }
+        #incidentContainer .updates p { margin: 6px 0 0 0; color: #334155; }
+        #incidentContainer .updates ul { margin: 6px 0 0 18px; }
+        #incidentContainer .updates li { margin: 4px 0; }
+    </style>
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const incident = params.get('incident');
+            const heading = document.getElementById('incidentHeading');
+            const sectionHead = document.querySelector('.section-head');
+            const container = document.getElementById('incidentContainer');
+
+            if (!incident) {
+                heading.textContent = 'Incident not specified';
+                container.innerHTML = '<div class="error">Missing incident code. Use the history on the home page to open an incident.</div>';
+                return;
+            }
+
+            document.title = `Incident ${incident}`;
+            heading.textContent = `Incident ${incident}`;
+
+            const url = `/incidents/html/${incident}.html`;
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Not found');
+                const html = await res.text();
+
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                // Extract incident name and impact
+                const nameEl = doc.querySelector('h1.incident-name');
+                const incidentName = (nameEl && nameEl.textContent.trim()) || `Incident ${code}`;
+                let impact = 'none';
+                if (nameEl) {
+                    const impactClass = Array.from(nameEl.classList || []).find(c => c.startsWith('impact-'));
+                    if (impactClass) impact = impactClass.replace('impact-', '');
+                }
+
+                heading.textContent = incidentName;
+
+                // Add impact pill to section head
+                const pill = document.createElement('span');
+                pill.className = `pill ${impact}`;
+                pill.textContent = impact;
+                sectionHead.appendChild(pill);
+
+                // Build updates list
+                const updatesWrap = document.createElement('div');
+                updatesWrap.className = 'updates';
+
+                const rows = doc.querySelectorAll('.incident-updates-container .row.update-row');
+                if (!rows || rows.length === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'u';
+                    empty.innerHTML = '<p>No updates available for this incident.</p>';
+                    updatesWrap.appendChild(empty);
+                } else {
+                    rows.forEach(row => {
+                        const title = (row.querySelector('.update-title')?.textContent || '').trim();
+                        console.log(title);
+                        const ts = (row.querySelector('.update-timestamp')?.textContent || '').trim().replace(/^Posted\s*/, '');
+                        const md = row.querySelector('.update-container .markdown-display');
+                        const bodyEl = row.querySelector('.update-container .update-body');
+
+                        const u = document.createElement('div');
+                        u.className = 'u';
+
+                        if (ts) {
+                            const time = document.createElement('time');
+                            time.textContent = ts;
+                            u.appendChild(time);
+                        }
+
+                        if (md) {
+                            const div = document.createElement('div');
+                            div.innerHTML = md.innerHTML.replaceAll('<strong>', '').replaceAll('</strong>', '');
+                            
+                            u.appendChild(div);
+                        } else if (bodyEl) {
+                            const text = bodyEl.textContent.trim();
+                            const p = document.createElement('p');
+                            p.innerHTML = (title ? `<strong>${escapeHtml(title)}:</strong> ` : '') + escapeHtml(text);
+                            u.appendChild(p);
+                        }
+
+                        updatesWrap.appendChild(u);
+                    });
+                }
+
+                // Render container content
+                const article = document.createElement('article');
+                article.className = `incident ${impact}`;
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                meta.textContent = `Incident: ${incident}`;
+                article.appendChild(meta);
+                article.appendChild(updatesWrap);
+
+                container.innerHTML = '';
+                container.appendChild(article);
+            } catch (e) {
+                container.innerHTML = '<div class="error">Incident not found. It may have been removed or the code is incorrect.</div>';
+            }
+
+            function escapeHtml(str) {
+                return str
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>AEM Status</h1>
+            <p>Incident details</p>
+            <a class="back-link" href="/">← Back to status</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="section" aria-labelledby="incidentHeading">
+            <div class="section-head">
+                <h2 id="incidentHeading">Incident</h2>
+            </div>
+            <div class="iframe-wrap" id="incidentContainer">
+                <div class="incidents">
+                    <div>Loading…</div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+

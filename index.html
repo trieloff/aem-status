@@ -3,51 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AEM Status</title>
-    <style>
-        html, body { height: 100%; }
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #111827; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
-        header { background: #4f46e5; color: white; padding: 40px 0; }
-        main { padding: 20px 0 40px; }
-
-        /* Cards/sections */
-        .section { background: #ffffff; border-radius: 12px; box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06); overflow: hidden; margin: 24px 0; }
-        .section-head { padding: 16px 20px; background: #f1f5f9; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
-        .section-head h2 { margin: 0; font-size: 18px; color: #334155; }
-
-        /* Overall status */
-        .status-overview { background: #ffffff; border-radius: 12px; box-shadow: 0 10px 24px rgba(2, 6, 23, 0.06); padding: 20px; margin-top: -16px; display: flex; justify-content: center; }
-        .status-badge { display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 999px; font-weight: 700; }
-        .status-badge.ok { background: #ecfdf5; color: #065f46; }
-        .status-badge.warn { background: #fffbeb; color: #92400e; }
-        .status-badge.err { background: #fef2f2; color: #991b1b; }
-        .status-indicator { width: 10px; height: 10px; border-radius: 999px; }
-        .status-indicator.ok { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
-        .status-indicator.warn { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
-        .status-indicator.err { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
-
-        /* Services */
-        .services { display: grid; grid-template-columns: 1fr; }
-        .service { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 16px 20px; border-top: 1px solid #f1f5f9; }
-        .service:first-child { border-top: none; }
-        .service h3 { margin: 0; font-size: 16px; }
-        .service p { margin: 4px 0 0 0; color: #6b7280; font-size: 14px; }
-        .service .state { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 14px; }
-        .service .state.ok { color: #065f46; }
-        .service .state.warn { color: #92400e; }
-        .service .state.err { color: #991b1b; }
-
-        /* Responsive */
-        @media (max-width: 720px) {
-            .service { grid-template-columns: 1fr; align-items: start; }
-        }
-    </style>
+    <title>AEM Edge Delivery Status</title>
+    <link rel="stylesheet" href="styles/styles.css">
+    <script src="scripts/scripts.js" type="module"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>AEM Status</h1>
+            <h1>AEM Edge Delivery Status</h1>
             <p>Current system status and incident history</p>
         </div>
     </header>
@@ -73,35 +36,14 @@
                 <div class="service" role="listitem">
                     <div>
                         <h3>AEM Edge Delivery Services: Publishing</h3>
-                        <p>Authroing and publishing services</p>
-                    </div>
-                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
-                </div>
-                <div class="service" role="listitem">
-                    <div>
-                        <h3>CDN</h3>
-                        <p>Global content delivery network</p>
-                    </div>
-                    <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
-                </div>
-                <div class="service" role="listitem">
-                    <div>
-                        <h3>Asset Processing</h3>
-                        <p>Digital asset processing (images, video)</p>
-                    </div>
-                    <div class="state warn"><span class="status-indicator warn"></span>Degraded performance</div>
-                </div>
-                <div class="service" role="listitem">
-                    <div>
-                        <h3>Search & Indexing</h3>
-                        <p>Content search, indexing pipelines</p>
+                        <p>Authoring and Publishing services</p>
                     </div>
                     <div class="state ok"><span class="status-indicator ok"></span>Operational</div>
                 </div>
             </div>
         </section>
 
-        <!-- Current incidents -->
+        <!-- Current incident 
         <section class="section" aria-labelledby="currentIncidentsTitle">
             <div class="section-head">
                 <h2 id="currentIncidentsTitle">Current incidents</h2>
@@ -126,80 +68,33 @@
                 <article class="incident" role="listitem" aria-labelledby="inc1Title">
                     <div class="incident-row">
                         <div>
-                            <h3 id="inc1Title">Asset Processing performance degradation</h3>
+                            <h3 id="inc1Title">Investigating AEM Edge Delivery Service Issues</h3>
                             <div class="meta">Started: Dec 15, 2024 • 2:30 PM PST</div>
                         </div>
-                        <div class="pill monitoring">Monitoring</div>
+                        <div class="pill investigating">investigating</div>
                     </div>
-                    <p>Uploads may take longer to process. A mitigation is in place while we observe recovery.</p>
+                    <p>We are investigating issues with AEM Edge Delivery Services. We will provide updates as we have them.</p>
                     <div class="updates" aria-label="Updates">
                         <div class="u">
                             <time datetime="2024-12-15T15:45:00-08:00">3:45 PM PST</time>
                             <p>Fix applied; throughput improving.</p>
                         </div>
-                        <div class="u">
-                            <time datetime="2024-12-15T15:15:00-08:00">3:15 PM PST</time>
-                            <p>Identified DB pool saturation; rolling config change.</p>
-                        </div>
-                        <div class="u">
-                            <time datetime="2024-12-15T14:45:00-08:00">2:45 PM PST</time>
-                            <p>Investigating elevated processing latency.</p>
-                        </div>
                     </div>
                 </article>
             </div>
         </section>
+        -->
 
         <!-- Incident history -->
         <section class="section" aria-labelledby="historyTitle">
             <div class="section-head">
                 <h2 id="historyTitle">Incident history</h2>
             </div>
-            <div class="incidents" role="list">
-                <article class="incident" role="listitem" aria-labelledby="inc2Title">
-                    <div class="incident-row">
-                        <div>
-                            <h3 id="inc2Title">AEM Author login issues</h3>
-                            <div class="meta">Dec 12, 2024 • 9:15 AM – 11:30 AM PST</div>
-                        </div>
-                        <div class="pill resolved">Resolved</div>
-                    </div>
-                    <p>Users could not log in due to authentication instability.</p>
-                    <div class="updates">
-                        <div class="u">
-                            <time datetime="2024-12-12T11:30:00-08:00">11:30 AM PST</time>
-                            <p>Service stable; logins restored.</p>
-                        </div>
-                        <div class="u">
-                            <time datetime="2024-12-12T10:45:00-08:00">10:45 AM PST</time>
-                            <p>Identified LDAP connector error; fix deployed.</p>
-                        </div>
-                    </div>
-                </article>
-                <article class="incident" role="listitem" aria-labelledby="inc3Title">
-                    <div class="incident-row">
-                        <div>
-                            <h3 id="inc3Title">CDN cache purge delays</h3>
-                            <div class="meta">Dec 8, 2024 • 3:20 PM – 4:45 PM PST</div>
-                        </div>
-                        <div class="pill resolved">Resolved</div>
-                    </div>
-                    <p>Cache purges were delayed, slowing content updates.</p>
-                    <div class="updates">
-                        <div class="u">
-                            <time datetime="2024-12-08T16:45:00-08:00">4:45 PM PST</time>
-                            <p>Performance normal. Monitoring complete.</p>
-                        </div>
-                        <div class="u">
-                            <time datetime="2024-12-08T16:00:00-08:00">4:00 PM PST</time>
-                            <p>Restarted cache manager; latencies improving.</p>
-                        </div>
-                    </div>
-                </article>
+            <div class="incidents" role="list" id="incidentHistory">
             </div>
         </section>
 
-        <!-- Uptime overview -->
+        <!--
         <section class="section" aria-labelledby="uptimeTitle">
             <div class="section-head">
                 <h2 id="uptimeTitle">90‑day uptime history</h2>
@@ -384,6 +279,7 @@
                 </div>
             </div>
         </section>
+    -->
     </main>
 </body>
 </html>

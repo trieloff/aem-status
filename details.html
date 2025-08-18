@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incident details</title>
     <link rel="stylesheet" href="/styles/styles.css">
+    <script src="/scripts/details.js" type="module"></script>
     <style>
         .back-link { display: inline-block; margin: 12px 0 0; color: white; text-decoration: none; }
         .back-link:hover { text-decoration: underline; }
@@ -25,118 +26,14 @@
         #incidentContainer .updates p { margin: 6px 0 0 0; color: #334155; }
         #incidentContainer .updates ul { margin: 6px 0 0 18px; }
         #incidentContainer .updates li { margin: 4px 0; }
+
+        #incidentContainer article { padding: 16px 20px; }
+
+        #incidentContainer ul.updates { list-style-type: none; padding: 16px 20px; }
+        #incidentContainer ul.updates li { border-top: 1px solid #e2e8f0; padding: 16px 0; }
+        #incidentContainer ul.updates h2 { margin: 0; }
+        #incidentContainer time { font-style: italic; color: #6b7280; font-size: 14px; }
     </style>
-    <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-            const params = new URLSearchParams(window.location.search);
-            const incident = params.get('incident');
-            const heading = document.getElementById('incidentHeading');
-            const sectionHead = document.querySelector('.section-head');
-            const container = document.getElementById('incidentContainer');
-
-            if (!incident) {
-                heading.textContent = 'Incident not specified';
-                container.innerHTML = '<div class="error">Missing incident code. Use the history on the home page to open an incident.</div>';
-                return;
-            }
-
-            document.title = `Incident ${incident}`;
-            heading.textContent = `Incident ${incident}`;
-
-            const url = `/incidents/html/${incident}.html`;
-            try {
-                const res = await fetch(url);
-                if (!res.ok) throw new Error('Not found');
-                const html = await res.text();
-
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                // Extract incident name and impact
-                const nameEl = doc.querySelector('h1.incident-name');
-                const incidentName = (nameEl && nameEl.textContent.trim()) || `Incident ${code}`;
-                let impact = 'none';
-                if (nameEl) {
-                    const impactClass = Array.from(nameEl.classList || []).find(c => c.startsWith('impact-'));
-                    if (impactClass) impact = impactClass.replace('impact-', '');
-                }
-
-                heading.textContent = incidentName;
-
-                // Add impact pill to section head
-                const pill = document.createElement('span');
-                pill.className = `pill ${impact}`;
-                pill.textContent = impact;
-                sectionHead.appendChild(pill);
-
-                // Build updates list
-                const updatesWrap = document.createElement('div');
-                updatesWrap.className = 'updates';
-
-                const rows = doc.querySelectorAll('.incident-updates-container .row.update-row');
-                if (!rows || rows.length === 0) {
-                    const empty = document.createElement('div');
-                    empty.className = 'u';
-                    empty.innerHTML = '<p>No updates available for this incident.</p>';
-                    updatesWrap.appendChild(empty);
-                } else {
-                    rows.forEach(row => {
-                        const title = (row.querySelector('.update-title')?.textContent || '').trim();
-                        console.log(title);
-                        const ts = (row.querySelector('.update-timestamp')?.textContent || '').trim().replace(/^Posted\s*/, '');
-                        const md = row.querySelector('.update-container .markdown-display');
-                        const bodyEl = row.querySelector('.update-container .update-body');
-
-                        const u = document.createElement('div');
-                        u.className = 'u';
-
-                        if (ts) {
-                            const time = document.createElement('time');
-                            time.textContent = ts;
-                            u.appendChild(time);
-                        }
-
-                        if (md) {
-                            const div = document.createElement('div');
-                            div.innerHTML = md.innerHTML.replaceAll('<strong>', '').replaceAll('</strong>', '');
-                            
-                            u.appendChild(div);
-                        } else if (bodyEl) {
-                            const text = bodyEl.textContent.trim();
-                            const p = document.createElement('p');
-                            p.innerHTML = (title ? `<strong>${escapeHtml(title)}:</strong> ` : '') + escapeHtml(text);
-                            u.appendChild(p);
-                        }
-
-                        updatesWrap.appendChild(u);
-                    });
-                }
-
-                // Render container content
-                const article = document.createElement('article');
-                article.className = `incident ${impact}`;
-                const meta = document.createElement('div');
-                meta.className = 'meta';
-                meta.textContent = `Incident: ${incident}`;
-                article.appendChild(meta);
-                article.appendChild(updatesWrap);
-
-                container.innerHTML = '';
-                container.appendChild(article);
-            } catch (e) {
-                container.innerHTML = '<div class="error">Incident not found. It may have been removed or the code is incorrect.</div>';
-            }
-
-            function escapeHtml(str) {
-                return str
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#039;');
-            }
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -150,9 +47,9 @@
     <main class="container">
         <section class="section" aria-labelledby="incidentHeading">
             <div class="section-head">
-                <h2 id="incidentHeading">Incident</h2>
+                <h2 id="incidentHeading">Incident details</h2>
             </div>
-            <div class="iframe-wrap" id="incidentContainer">
+            <div id="incidentContainer">
                 <div class="incidents">
                     <div>Loading…</div>
                 </div>

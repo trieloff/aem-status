@@ -184,4 +184,100 @@ const initIncidents = async () => {
   displayIncidentHistory(history);
 };
 
-initIncidents();
+const download = (string, filename, type) => {
+  const a = document.createElement('a');
+  a.href = `data: ${type};charset=utf-8, ${string}`;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+const savePostmortem = async () => {
+  download(encodeURIComponent(document.getElementById('incidentText').value), `${document.getElementById('incidentid').textContent}.html`, 'text/html');
+};
+
+const saveIndex = async () => {
+  /* create index */
+  const index = await getHistory();
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const now = new Date();
+  const currentMonth = months[now.getMonth()];
+  let month = index.find((i) => i.name === currentMonth && i.year === now.getFullYear());
+  if (!month) {
+    month = {
+      name: currentMonth,
+      year: now.getFullYear(),
+      incidents: [],
+    };
+    index.unshift(month);
+  }
+  month.incidents.unshift({
+    code: document.getElementById('incidentid').textContent,
+    name: document.getElementById('incidentName').value,
+    message: document.getElementById('incidentText').value,
+    impact: document.getElementById('incidentImpact').value,
+    timestamp: new Date().toISOString(),
+  });
+  const indexJson = JSON.stringify(index, null, 2);
+  download(indexJson, 'index.json', 'application/json');
+};
+
+const updatePostmortem = async () => {
+  const postmortemSelect = document.getElementById('postmortemSelect');
+  const resp = await fetch(`/incidents/incident-template-${postmortemSelect.value}.html`);
+  const template = await resp.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(template, 'text/html');
+  const incidentName = document.getElementById('incidentName').value;
+  const incidentTextArea = document.getElementById('incidentText');
+  const incidentImpact = document.getElementById('incidentImpact').value;
+  doc.querySelector('h1').textContent = incidentName;
+  doc.querySelector('h1').className = incidentImpact;
+  const updates = doc.querySelector('.updates');
+  let updatesHTML = '';
+  window.currentIncident.forEach((incident) => {
+    updatesHTML += `
+    <li>
+      <h2>${incident.status}</h2>
+      <p>${incident.comment}</p>
+      <time>${incident.timestamp}</time>
+    </li>
+`;
+  });
+  updates.innerHTML = updatesHTML;
+
+  doc.querySelector('article time').textContent = new Date().toISOString();
+
+  incidentTextArea.value = doc.body.innerHTML;
+};
+
+const initPostmortem = async () => {
+  window.currentIncident = await fetchCurrentIncident();
+  document.querySelector('fieldset').disabled = false;
+  const randomString = (length) => Math.random().toString(36).substring(2, 2 + length);
+  const postmortemSelect = document.getElementById('postmortemSelect');
+  postmortemSelect.addEventListener('change', updatePostmortem);
+  const incidentId = `AEM-${randomString(8)}`;
+  document.getElementById('incidentid').textContent = incidentId;
+
+  const incidentName = document.getElementById('incidentName');
+  if (window.currentIncident.length > 0) incidentName.value = window.currentIncident[0].comment;
+  incidentName.addEventListener('input', updatePostmortem);
+
+  const incidentImpact = document.getElementById('incidentImpact');
+  if (window.currentIncident.length > 0) {
+    incidentImpact.value = window.currentIncident[window.currentIncident.length - 1].impact;
+  }
+  incidentImpact.addEventListener('change', updatePostmortem);
+  updatePostmortem();
+
+  const saveButton = document.getElementById('saveButton');
+  saveButton.addEventListener('click', savePostmortem);
+
+  const saveIndexButton = document.getElementById('saveIndexButton');
+  saveIndexButton.addEventListener('click', saveIndex);
+};
+
+if (window.location.pathname === '/postmortem.html') initPostmortem();
+if (window.location.pathname === '/' || window.location.pathname === '/index.html') initIncidents();

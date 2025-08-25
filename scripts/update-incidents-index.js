@@ -82,7 +82,7 @@ function parseIncidentHTML(filePath, incidentCode) {
   let message = null;
   
   // Check if it's a legacy format (has DOCTYPE)
-  const isLegacy = html.includes('<!DOCTYPE');
+  const isLegacy = html.startsWith('<!DOCTYPE');
   
   if (isLegacy) {
     // Legacy format with full HTML structure
